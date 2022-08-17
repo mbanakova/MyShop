@@ -10,11 +10,11 @@ namespace MyShop.WebUI.Controllers
 {
     public class ProductCategoryManagerController : Controller
     {
-        ProductCategoryRepository context;
+        InMemoryRepository<ProductCategory> context;
 
         public ProductCategoryManagerController()
         {
-            context = new ProductCategoryRepository();
+            context = new InMemoryRepository<ProductCategory>();
         }
         // GET: ProductManager
         public ActionResult Index()
@@ -81,7 +81,7 @@ namespace MyShop.WebUI.Controllers
             }
         }
 
-        public ActionResult Delete(String Id)
+        public ActionResult Delete(string Id)
         {
             ProductCategory productCategoryToDelete = context.Find(Id);
             if (productCategoryToDelete == null)
@@ -96,7 +96,7 @@ namespace MyShop.WebUI.Controllers
 
         [HttpPost]
         [ActionName("Delete")]
-        public ActionResult ConfirmDelete(String Id)
+        public ActionResult ConfirmDelete(string Id)
         {
             ProductCategory productCategoryToDelete = context.Find(Id);
             if (productCategoryToDelete == null)
