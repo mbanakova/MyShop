@@ -117,6 +117,7 @@ namespace MyShop.Services
                                   Quantity = c.Quantity,
                                   ProductName = p.Name,
                                   Price = p.Price,
+                                  Image = p.Image
                               }).ToList();
                 return result;
             } else
