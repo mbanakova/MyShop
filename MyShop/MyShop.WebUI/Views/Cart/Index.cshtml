@@ -19,7 +19,7 @@
             @Html.DisplayNameFor(model => model.Price)
         </th>
         <th>
-           Line Total
+            Line Total
         </th>
         <th></th>
     </tr>
@@ -27,9 +27,7 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>
-                <img class="img" style="height:50px;" src="~/Content/ProductImages/@item.Image" />
-            </td>
+            <td><img style="height:50px" class="img" src="~/Content/ProductImages/@item.Image" /></td>
             <td>
                 @Html.DisplayFor(modelItem => item.ProductName)
             </td>
@@ -44,7 +42,6 @@
             </td>
             <td>
                 <a href="@Url.Action("RemoveFromCart", "Cart", new { Id = item.Id })" class="btn btn-danger">Delete</a>
-                @*@Html.ActionLink("Delete", "Delete", new { Id = item.Id })*@
             </td>
         </tr>
 

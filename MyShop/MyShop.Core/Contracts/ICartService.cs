@@ -9,7 +9,7 @@ using System.Web;
 namespace MyShop.Core.Contracts
 {
     public interface ICartService
-    {
+      { 
         void AddToCart(HttpContextBase httpContext, string productId);
         void RemoveFromCart(HttpContextBase httpContext, string itemId);
         List<CartItemViewModel> GetCartItems(HttpContextBase httpContext);
