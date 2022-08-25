@@ -13,6 +13,6 @@ namespace MyShop.Core.Contracts
         void AddToCart(HttpContextBase httpContext, string productId);
         void RemoveFromCart(HttpContextBase httpContext, string itemId);
         List<CartItemViewModel> GetCartItems(HttpContextBase httpContext);
-        CartSummaryViewModel GetCartSummary(HttpContextBase httpContext)
+        CartSummaryViewModel GetCartSummary(HttpContextBase httpContext);
     }
 }
