@@ -60,7 +60,7 @@ namespace MyShop.WebUI.Controllers
             orderService.CreateOrder(order, cartItems);
             cartService.ClearCart(this.HttpContext);
 
-            return RedirectToAction("Thanx", new { OrderId = order.Id });
+            return RedirectToAction("ThankYou", new { OrderId = order.Id });
         }
 
         public ActionResult ThankYou(string OrderId)
