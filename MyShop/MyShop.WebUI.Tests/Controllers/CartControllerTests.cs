@@ -20,11 +20,13 @@ namespace MyShop.WebUI.Tests.Controllers
             //setup
             IRepository<Cart> carts = new MockContext<Cart>();
             IRepository<Product> products = new MockContext<Product>();
+            IRepository<Order> orders = new MockContext<Order>();
 
             var httpContext = new MockHttpContext();
 
             ICartService cartService = new CartService(products, carts);
-            var controller = new CartController(cartService);
+            IOrderService orderService = new OrderService(orders);
+            var controller = new CartController(cartService, orderService);
             controller.ControllerContext = 
                 new System.Web.Mvc.ControllerContext(httpContext, new System.Web.Routing.RouteData(), controller);
 
@@ -46,6 +48,7 @@ namespace MyShop.WebUI.Tests.Controllers
             //setup
             IRepository<Cart> carts = new MockContext<Cart>();
             IRepository<Product> products = new MockContext<Product>();
+            IRepository<Order> orders = new MockContext<Order>();
 
             products.Insert(new Product() { Id = "1", Price = 10.00m });
             products.Insert(new Product() { Id = "2", Price = 5.00m });
@@ -56,8 +59,9 @@ namespace MyShop.WebUI.Tests.Controllers
             carts.Insert(cart);
 
             ICartService cartService = new CartService(products, carts);
-
-            var controller = new CartController(cartService);
+            IOrderService orderService = new OrderService(orders);
+            var controller = new CartController(cartService, orderService);
+             
             var httpContext = new MockHttpContext();
             httpContext.Request.Cookies.Add(new System.Web.HttpCookie("eCommerceCart") { Value = cart.Id });
             controller.ControllerContext =
@@ -69,6 +73,46 @@ namespace MyShop.WebUI.Tests.Controllers
           
             Assert.AreEqual(5, cartSummary.CartCount);
             Assert.AreEqual(35.00m, cartSummary.CartTotal);
+        }
+
+        [TestMethod]
+        public void CanCheckoutAndCreateOrder()
+        {
+            IRepository<Product> products = new MockContext<Product>();
+            products.Insert(new Product() { Id = "1", Price = 10.00m });
+            products.Insert(new Product() { Id = "2", Price = 5.00m });
+
+            IRepository<Cart> carts = new MockContext<Cart>();
+            Cart cart = new Cart();
+            cart.CartItems.Add(new CartItem() { ProductId = "1", Quantity = 2, CartId = cart.Id });
+            cart.CartItems.Add(new CartItem() { ProductId = "1", Quantity = 1, CartId = cart.Id });
+
+            carts.Insert(cart);
+
+            ICartService cartService = new CartService(products, carts);
+
+            IRepository<Order> orders = new MockContext<Order>();
+            IOrderService orderService = new OrderService(orders);
+
+            var controller = new CartController(cartService, orderService);
+            var httpContext = new MockHttpContext();
+            httpContext.Request.Cookies.Add(new System.Web.HttpCookie("eCommerceCart")
+            {
+                Value = cart.Id
+            });
+
+            controller.ControllerContext = new ControllerContext(httpContext, new System.Web.Routing.RouteData(), controller);
+
+            //Act
+            Order order = new Order();
+            controller.Checkout(order);
+
+            //assert
+            Assert.AreEqual(2, order.OrderItems.Count);
+            Assert.AreEqual(0, cart.CartItems.Count);
+
+            Order orderInRep = orders.Find(order.Id);
+            Assert.AreEqual(2, orderInRep.OrderItems.Count);
         }
     }
 }
